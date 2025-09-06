@@ -46,16 +46,18 @@
             border-radius: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
             text-align: center;
+            cursor: pointer;
         }
 
-        .nav-item:hover, .sub-nav-item:hover, .active-nav-item, .active-sub-item {
+        .nav-item:hover, .sub-nav-item:hover, .nav-item:focus, .sub-nav-item:focus,
+        .active-nav-item, .active-sub-item {
             background-color: #333;
             color: #fff;
+            outline: none;
         }
 
         .main-content {
             padding-top: 80px;
-            position: relative;
         }
 
         .page-section {
@@ -65,23 +67,19 @@
             justify-content: center;
             align-items: center;
             text-align: left;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        
+
         .page-section.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
-            position: relative; /* Добавлено для правильного потока документа */
+            position: relative;
         }
-        
+
         .section-content {
             max-width: 900px;
             width: 100%;
@@ -139,7 +137,7 @@
             padding: 25px;
             border-radius: 8px;
             border-left: 5px solid #f7d63d;
-            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .project-details.hidden {
@@ -162,8 +160,9 @@
             transition: background-color 0.3s ease;
         }
 
-        .project-link:hover {
+        .project-link:hover, .project-link:focus {
             background-color: #555;
+            outline: none;
         }
 
         .tool-item {
@@ -188,7 +187,6 @@
             margin-top: 20px;
         }
 
-        /* Стили для кнопки Telegram */
         .contact-buttons {
             display: flex;
             flex-direction: column;
@@ -197,26 +195,24 @@
             margin-top: 20px;
         }
 
-        .contact-buttons a {
-            text-decoration: none;
-        }
-
         .contact-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             padding: 12px 25px;
-            background-color: #0088cc; /* Цвет Telegram */
+            background-color: #0088cc;
             color: white;
             border-radius: 8px;
             font-weight: 700;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
         }
 
-        .contact-button:hover {
+        .contact-button:hover, .contact-button:focus {
             background-color: #006699;
             transform: translateY(-2px);
+            outline: none;
         }
 
         .contact-button svg {
@@ -225,8 +221,26 @@
             height: 20px;
             fill: white;
         }
-        
+
         /* Медиа-запросы для адаптивности */
+        @media (max-width: 1024px) {
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .section-content {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.3rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .nav-menu {
                 flex-direction: column;
@@ -242,7 +256,6 @@
             }
 
             .page-section {
-                top: 220px;
                 min-height: calc(100vh - 220px);
                 padding: 20px 10px;
             }
@@ -261,15 +274,52 @@
 
             .nav-item, .sub-nav-item {
                 font-size: 1rem;
+                padding: 8px 12px;
+            }
+
+            .projects-nav {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding-top: 260px;
+            }
+
+            .page-section {
+                min-height: calc(100vh - 260px);
+                padding: 15px 5px;
+            }
+
+            .section-content {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .nav-item, .sub-nav-item {
+                font-size: 0.9rem;
+                padding: 6px 10px;
+            }
+
+            .project-link, .contact-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-
     <header class="header">
         <nav class="nav-menu">
-            <a href="#history" class="nav-item">История компании</a>
+            <a href="#history" class="nav-item active-nav-item">История компании</a>
             <a href="#projects" class="nav-item">Наши проекты</a>
             <a href="#tools" class="nav-item">Инструменты</a>
             <a href="#contacts" class="nav-item">Обратная связь</a>
@@ -404,7 +454,7 @@
             </div>
         </section>
     </main>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navItems = document.querySelectorAll('.nav-item');
@@ -419,8 +469,10 @@
                 const activeSection = document.querySelector(sectionId);
                 if (activeSection) {
                     activeSection.classList.add('active');
-                    // Добавлен сброс скролла наверх для удобства
-                    activeSection.scrollIntoView({ behavior: 'smooth' });
+                    // Прокрутка только для основных секций и только на устройствах с шириной более 768px
+                    if (window.innerWidth > 768) {
+                        activeSection.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             };
 
@@ -431,6 +483,10 @@
                 const activeProject = document.querySelector(projectId);
                 if (activeProject) {
                     activeProject.classList.remove('hidden');
+                    // Прокрутка к началу секции "Проекты" только при первом открытии
+                    if (window.innerWidth > 768 && !document.querySelector('#projects').classList.contains('active')) {
+                        document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             };
 
@@ -439,7 +495,6 @@
                     e.preventDefault();
                     const targetSection = item.getAttribute('href');
                     showSection(targetSection);
-                    
                     navItems.forEach(nav => nav.classList.remove('active-nav-item'));
                     item.classList.add('active-nav-item');
                 });
@@ -450,18 +505,13 @@
                     e.preventDefault();
                     const targetProject = item.getAttribute('href');
                     showProject(targetProject);
-                    
                     projectNavItems.forEach(subItem => subItem.classList.remove('active-sub-item'));
                     item.classList.add('active-sub-item');
                 });
             });
 
-            // Установка начального состояния
             showSection('#history');
-            document.querySelector('.nav-item[href="#history"]').classList.add('active-nav-item');
-
             showProject('#age-calc');
-            document.querySelector('.sub-nav-item[href="#age-calc"]').classList.add('active-sub-item');
         });
     </script>
 </body>
