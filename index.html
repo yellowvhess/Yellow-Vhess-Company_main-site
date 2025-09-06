@@ -34,6 +34,7 @@
             justify-content: center;
             gap: 30px;
             padding: 0 20px;
+            flex-wrap: wrap; /* Добавлено для переноса пунктов на новую строку */
         }
 
         .nav-item, .sub-nav-item {
@@ -44,6 +45,7 @@
             padding: 10px 15px;
             border-radius: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
+            text-align: center; /* Центрирование текста для мобильных */
         }
 
         .nav-item:hover, .sub-nav-item:hover, .active-nav-item, .active-sub-item {
@@ -86,6 +88,7 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box; /* Учёт padding в ширине */
         }
 
         h1 {
@@ -183,6 +186,45 @@
             text-align: center;
             margin-top: 20px;
         }
+        
+        /* Стили для кнопки Telegram */
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-buttons a {
+            text-decoration: none;
+        }
+
+        .contact-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background-color: #0088cc; /* Цвет Telegram */
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-button:hover {
+            background-color: #006699;
+            transform: translateY(-2px);
+        }
+
+        .contact-button svg {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
 
         /* Анимации для переходов между разделами */
         .page-section:not(.active) {
@@ -215,21 +257,40 @@
             }
         }
         
+        /* Медиа-запросы для адаптивности */
         @media (max-width: 768px) {
             .nav-menu {
                 flex-direction: column;
                 gap: 10px;
-                text-align: center;
             }
+
             .header {
                 padding: 10px 0;
             }
+
             .main-content {
-                padding-top: 180px;
+                padding-top: 220px; /* Увеличили отступ, чтобы навигация не перекрывала контент */
             }
+
             .page-section {
-                top: 180px;
-                min-height: calc(100vh - 180px);
+                top: 220px;
+                min-height: calc(100vh - 220px);
+            }
+
+            .section-content {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .nav-item, .sub-nav-item {
+                font-size: 1rem;
             }
         }
     </style>
@@ -355,67 +416,14 @@
         <section id="contacts" class="page-section">
             <div class="section-content">
                 <h1>Обратная связь</h1>
-                <p>Если у вас остались вопросы или есть предложения для сайтов, то просьба обращаться нам на почту: <a href="mailto:wertq6306@gmail.com">wertq6306@gmail.com</a></p>
-            </div>
-        </section>
-    </main>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const navItems = document.querySelectorAll('.nav-item');
-            const sections = document.querySelectorAll('.page-section');
-            const projectNavItems = document.querySelectorAll('.sub-nav-item');
-            const projectDetails = document.querySelectorAll('.project-details');
-
-            const showSection = (sectionId) => {
-                sections.forEach(section => {
-                    section.classList.remove('active');
-                });
-                const activeSection = document.querySelector(sectionId);
-                if (activeSection) {
-                    activeSection.classList.add('active');
-                }
-            };
-
-            const showProject = (projectId) => {
-                projectDetails.forEach(detail => {
-                    detail.classList.add('hidden');
-                });
-                const activeProject = document.querySelector(projectId);
-                if (activeProject) {
-                    activeProject.classList.remove('hidden');
-                }
-            };
-
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetSection = item.getAttribute('href');
-                    showSection(targetSection);
-                    
-                    navItems.forEach(nav => nav.classList.remove('active-nav-item'));
-                    item.classList.add('active-nav-item');
-                });
-            });
-
-            projectNavItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetProject = item.getAttribute('href');
-                    showProject(targetProject);
-                    
-                    projectNavItems.forEach(subItem => subItem.classList.remove('active-sub-item'));
-                    item.classList.add('active-sub-item');
-                });
-            });
-
-            // Установка начального состояния
-            showSection('#history');
-            document.querySelector('.nav-item[href="#history"]').classList.add('active-nav-item');
-
-            showProject('#age-calc');
-            document.querySelector('.sub-nav-item[href="#age-calc"]').classList.add('active-sub-item');
-        });
-    </script>
-</body>
-</html>
+                <p>Если у вас остались вопросы или есть предложения, пожалуйста, свяжитесь с нами.</p>
+                <div class="contact-buttons">
+                    <a href="mailto:wertq6306@gmail.com" class="contact-button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"></path>
+                        </svg>
+                        Написать на почту
+                    </a>
+                    <a href="https://t.me/yhcomapny" target="_blank" class="contact-button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.75 8.25L12 15.75l-3.75-3.75 8.25-5.25z" fill-rule="eveno
