@@ -34,7 +34,7 @@
             justify-content: center;
             gap: 30px;
             padding: 0 20px;
-            flex-wrap: wrap; /* Добавлено для переноса пунктов на новую строку */
+            flex-wrap: wrap;
         }
 
         .nav-item, .sub-nav-item {
@@ -45,7 +45,7 @@
             padding: 10px 15px;
             border-radius: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
-            text-align: center; /* Центрирование текста для мобильных */
+            text-align: center;
         }
 
         .nav-item:hover, .sub-nav-item:hover, .active-nav-item, .active-sub-item {
@@ -65,22 +65,23 @@
             justify-content: center;
             align-items: center;
             text-align: left;
-            transform: translateX(100%);
-            opacity: 0;
-            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
             position: absolute;
-            top: 80px;
+            top: 0;
             left: 0;
             width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-
+        
         .page-section.active {
-            transform: translateX(0);
             opacity: 1;
-            position: relative;
-            z-index: 1;
+            visibility: visible;
+            transform: translateY(0);
+            position: relative; /* Добавлено для правильного потока документа */
         }
-
+        
         .section-content {
             max-width: 900px;
             width: 100%;
@@ -88,7 +89,7 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box; /* Учёт padding в ширине */
+            box-sizing: border-box;
         }
 
         h1 {
@@ -186,7 +187,7 @@
             text-align: center;
             margin-top: 20px;
         }
-        
+
         /* Стили для кнопки Telegram */
         .contact-buttons {
             display: flex;
@@ -224,38 +225,6 @@
             height: 20px;
             fill: white;
         }
-
-
-        /* Анимации для переходов между разделами */
-        .page-section:not(.active) {
-            animation: fadeOutLeft 0.8s forwards;
-        }
-
-        .page-section.active {
-            animation: fadeInRight 0.8s forwards;
-        }
-
-        @keyframes fadeOutLeft {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
         
         /* Медиа-запросы для адаптивности */
         @media (max-width: 768px) {
@@ -269,12 +238,13 @@
             }
 
             .main-content {
-                padding-top: 220px; /* Увеличили отступ, чтобы навигация не перекрывала контент */
+                padding-top: 220px;
             }
 
             .page-section {
                 top: 220px;
                 min-height: calc(100vh - 220px);
+                padding: 20px 10px;
             }
 
             .section-content {
@@ -426,4 +396,73 @@
                     </a>
                     <a href="https://t.me/yhcomapny" target="_blank" class="contact-button">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.75 8.25L12 15.75l-3.75-3.75 8.25-5.25z" fill-rule="eveno
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.75 8.25L12 15.75l-3.75-3.75 8.25-5.25z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                        </svg>
+                        Перейти в Telegram
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.page-section');
+            const projectNavItems = document.querySelectorAll('.sub-nav-item');
+            const projectDetails = document.querySelectorAll('.project-details');
+
+            const showSection = (sectionId) => {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                const activeSection = document.querySelector(sectionId);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                    // Добавлен сброс скролла наверх для удобства
+                    activeSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            const showProject = (projectId) => {
+                projectDetails.forEach(detail => {
+                    detail.classList.add('hidden');
+                });
+                const activeProject = document.querySelector(projectId);
+                if (activeProject) {
+                    activeProject.classList.remove('hidden');
+                }
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSection = item.getAttribute('href');
+                    showSection(targetSection);
+                    
+                    navItems.forEach(nav => nav.classList.remove('active-nav-item'));
+                    item.classList.add('active-nav-item');
+                });
+            });
+
+            projectNavItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetProject = item.getAttribute('href');
+                    showProject(targetProject);
+                    
+                    projectNavItems.forEach(subItem => subItem.classList.remove('active-sub-item'));
+                    item.classList.add('active-sub-item');
+                });
+            });
+
+            // Установка начального состояния
+            showSection('#history');
+            document.querySelector('.nav-item[href="#history"]').classList.add('active-nav-item');
+
+            showProject('#age-calc');
+            document.querySelector('.sub-nav-item[href="#age-calc"]').classList.add('active-sub-item');
+        });
+    </script>
+</body>
+</html>
